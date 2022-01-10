@@ -1,0 +1,263 @@
+function doPost(e) {
+ //認證身份，重新輸入line@ access_token
+ var CHANNEL_ACCESS_TOKEN = 'FXE0ySKNRM37GtwsHM9tckVTmxymUgRBI3kl4UDlc6VcFTY7Fe5bYXTmAoqqIOo6VmNoGNslqdwzVwDznnhtYDV336EsKcR6Txu9wlrLp/RFxfsBo0KlkloF0TzXWHStYLSEOP4ZSr1vM2dwDipPRAdB04t89/1O/w1cDnyilFU=';
+ var Channel_ID = '1656786583';
+ var msg= JSON.parse(e.postData.contents);
+
+ //除錯用
+ //Logger.log(msg);
+ console.log(msg);
+
+ //從接收到的訊息中取出 replayToken 和發送的訊息文字
+ var replyToken = msg.events[0].replyToken;
+ var userMessage = msg.events[0].message.text;
+ var userid = msg.events[0].source.userId;
+ 
+ //寫入試算表
+ var url = 'https://docs.google.com/spreadsheets/d/14R01u8p1ksMy8iy63jHlCZMsyz2qwdNU-tY4Qvn4S-E/edit#gid=0';
+ var name = '工作表1'
+ var SpreadSheet = SpreadsheetApp.openByUrl(url);
+ var SheetName = SpreadSheet.getSheetByName(name);
+ var agi_1 = SheetName.getSheetValues(1,3,1,1);//牧場名稱
+ var agi_1_1 = SheetName.getSheetValues(2,3,1,1);//牧場1
+ var agi_1_2 = SheetName.getSheetValues(3,3,1,1);//牧場2
+ var agi_1_3 = SheetName.getSheetValues(4,3,1,1);//牧場3
+ var agi_1_4 = SheetName.getSheetValues(5,3,1,1);//牧場4
+ var agi_1_5 = SheetName.getSheetValues(6,3,1,1);//牧場5
+ var agi_1_6 = SheetName.getSheetValues(7,3,1,1);//牧場6
+ var agi_1_7 = SheetName.getSheetValues(8,3,1,1);//牧場7
+ var agi_1_8 = SheetName.getSheetValues(9,3,1,1);//牧場8
+ var agi_1_9 = SheetName.getSheetValues(10,3,1,1);//牧場9
+ 
+ var agi_2 = SheetName.getSheetValues(1,4,1,1);//牧場地址
+ var agi_2_1 = SheetName.getSheetValues(2,4,1,1);//地址1
+ var agi_2_2 = SheetName.getSheetValues(3,4,1,1);//地址2
+ var agi_2_3 = SheetName.getSheetValues(4,4,1,1);//地址3
+ var agi_2_4 = SheetName.getSheetValues(5,4,1,1);//地址4
+
+ 
+ var agi_3 = SheetName.getSheetValues(1,5,1,1);//負責人
+ var agi_3_1 = SheetName.getSheetValues(2,5,1,1);//負責人1
+ var agi_3_2 = SheetName.getSheetValues(3,5,1,1);//負責人2
+ var agi_3_3 = SheetName.getSheetValues(4,5,1,1);//負責人3
+ var agi_3_4 = SheetName.getSheetValues(5,5,1,1);//負責人4
+
+ 
+ var agi_4 = SheetName.getSheetValues(1,6,1,1);//種類
+ var agi_4_1 = SheetName.getSheetValues(2,6,1,1);//種類
+ var agi_5 = SheetName.getSheetValues(10,1,1,1);//資料數目
+
+ 
+
+
+ if (typeof replyToken === 'undefined') {
+   return;
+  };
+
+ var userMessageNum = parseInt(userMessage); //parseInt 是可將字串轉換成整數的方式
+  if (isNaN(parseInt(userMessage))) {//測試是不是數字
+    if(userMessage.match("查詢地點")){//測試是不是要開地圖
+      var posotion = userMessage.replace("查詢地點",'屏東縣'+'');
+      var mapResponse = Maps.newGeocoder().geocode(posotion);
+      console.log(mapResponse);
+      var returnmessage=[{
+        "type": "location",
+        "title": posotion,
+        "address": mapResponse.results[0].formatted_address,
+        "latitude": mapResponse.results[0].geometry.location.lat,
+        "longitude": mapResponse.results[0].geometry.location.lng
+         }]
+     }
+    else if (userMessage.match("查詢附近畜牧場資料")){
+
+    var returnmessage=[{
+  "type": "template",
+  "altText": "this is a carousel template",
+  "template": {
+    "type": "carousel",
+    "columns": [
+      {
+        "title": "牧場資料",
+        "text": "查詢結果共有6筆",
+        "actions": [
+          {
+            "type": "message",
+            "label": "俊志養豬牧場",
+            "text": "查詢俊志養豬牧場"
+          },
+          {
+            "type": "message",
+            "label": "國鑫養豬畜牧場",
+            "text": "查詢國鑫養豬畜牧場"
+          },
+          {
+            "type": "message",
+            "label": "東平養豬牧場",
+            "text": "查詢東平養豬牧場"
+          }
+        ]
+      },
+      {
+        "title": "牧場資料",
+        "text": "查詢結果共有6筆",
+        "actions": [
+          {
+            "type": "message",
+            "label": "來金養豬牧場",
+            "text": "查詢來金養豬牧場"
+          },
+          {
+            "type": "message",
+            "label": "顗發養豬畜牧場",
+            "text": "查詢顗發養豬畜牧場"
+          },
+          {
+            "type": "message",
+            "label": "黑豬畜牧場",
+            "text": "查詢黑豬畜牧場"
+          }
+        ]
+      }
+    ]
+  }
+}];
+    }
+    else if(userMessage.match("查詢俊志養豬牧場")){
+      var returnmessage=[{
+        'type': 'text',
+        'text': '查詢結果共有'+agi_5+'筆資料'+'\n'+
+        '第1筆資料:'+'\n'+
+        agi_1+':'+agi_1_1+'\n'+
+        agi_2+':'+agi_2_1+'\n'+
+        agi_3+':'+agi_3_1+'\n'+
+        agi_4+':'+agi_4_1
+
+          },
+                         
+                         {
+                           "type": "template",
+                           "altText": "this is a carousel template",
+                           "template": {
+                             "type": "carousel",
+                             "columns": [
+                               {
+                                 "title": "牧場資料",
+                                 "text": "查詢俊志養豬牧場地址",
+                                 "actions": [
+                                   {
+                                     "type": "message",
+                                     "label": "查詢地址",
+                                     "text": "查詢地點"+"九如鄉九清村九如段2229地號"
+          }
+        ]
+      }
+    ]
+  }
+}]
+          }
+        else if(userMessage.match("查詢國鑫養豬畜牧場")){
+      var returnmessage=[{
+        'type': 'text',
+        'text': '查詢結果共有'+agi_5+'筆資料'+'\n'+
+        '第2筆資料:'+'\n'+
+        agi_1+':'+agi_1_2+'\n'+
+        agi_2+':'+agi_2_2+'\n'+
+        agi_3+':'+agi_3_2+'\n'+
+        agi_4+':'+agi_4_1
+
+          },
+                         
+                         {
+                           "type": "template",
+                           "altText": "this is a carousel template",
+                           "template": {
+                             "type": "carousel",
+                             "columns": [
+                               {
+                                 "title": "牧場資料",
+                                 "text": "查詢國鑫養豬畜牧場地址",
+                                 "actions": [
+                                   {
+                                     "type": "message",
+                                     "label": "查詢地址",
+                                     "text": "查詢地點"+"九如鄉九平段617地號"
+          }
+        ]
+      }
+    ]
+  }
+}]
+          }
+            else if(userMessage.match("查詢東平養豬牧場")){
+      var returnmessage=[{
+        'type': 'text',
+        'text': '查詢結果共有'+agi_5+'筆資料'+'\n'+
+        '第3筆資料:'+'\n'+
+        agi_1+':'+agi_1_3+'\n'+
+        agi_2+':'+agi_2_3+'\n'+
+        agi_3+':'+agi_3_3+'\n'+
+        agi_4+':'+agi_4_1+'\n'+
+        "該地點與您距離為:"+"19公里"
+
+          },
+                         
+                         {
+                           "type": "template",
+                           "altText": "this is a carousel template",
+                           "template": {
+                             "type": "carousel",
+                             "columns": [
+                               {
+                                 "title": "牧場資料",
+                                 "text": "查詢東平養豬牧場地址",
+                                 "actions": [
+                                   {
+                                     "type": "message",
+                                     "label": "查詢地址",
+                                     "text": "查詢地點"+"九如鄉九塊村維新街84號"
+          }
+                                   
+        ]
+      }
+    ]
+  }
+}]
+          }
+
+  
+    else{
+        var returnmessage=[{
+          'type': 'text',
+          'text': "請輸入您要查詢的問題:"+'\n'+
+          '需查詢牧場資料請輸入:查詢附近畜牧場資料'+'\n'+
+          '需查詢地址取輸入:查詢地點...'
+          }];
+    };
+
+  }
+    else{
+      var returnmessage=[{
+        'type': 'text',
+         'text': '恭喜你將數字乘與二'+parseInt(userMessageNum)*2
+      }];
+  };
+
+
+
+  //sheet.appendRow([replyToken,userMessage,userid,returnmessage[0].text]);
+
+ //回傳訊息給line 並傳送給使用者
+ var url = 'https://api.line.me/v2/bot/message/reply';
+ UrlFetchApp.fetch(url, {
+    'headers': {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN,
+  },
+  'method': 'post',
+  'payload': JSON.stringify({
+    'replyToken': replyToken,
+    'messages': returnmessage,
+
+  }),
+ });
+}
